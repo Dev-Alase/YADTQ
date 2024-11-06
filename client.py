@@ -49,7 +49,7 @@ def submit(task_id_gen) :
         'task' : task,
         'operand 01' : op1,
         'operand 02' : op2,
-        'result' : 0,
+        'result' : 'null',
         'status' : 'queued'
     }
 
@@ -82,6 +82,7 @@ def __main__() :
     print(" 1. submit ")
     print(" 2. query ")
     print(" 3. query [taskId]")
+    print(" 4. clear")
     print(" 4. quit \n\n")
 
     proc = ""
@@ -101,6 +102,8 @@ def __main__() :
             submit(task_id_gen)
         elif proc == "query" :
             query(taskId)
+        elif proc == "clear" :
+            rb.clear()
         elif proc == "quit" :
             print("\n\nClinet executed successfully.....")
             print("Now aborting.....")
