@@ -3,11 +3,13 @@ from kafka import KafkaProducer
 import sys
 import termios
 import redis
+import json
+from yadtq.config import KAFKA_BROKER_URL,TASK_TOPIC
 from backend import ResultBackend
 # import time # uuid,secrets,hashlib
 
 rb = ResultBackend()
-
+producer = KafkaProducer(bootstrap_servers = KAFKA_BROKER_URL,value_serializer = lambda m : json.dumps(m).encode('ascii'))
 
 class TaskIDGenerator:
     def __init__(self, start=1):
@@ -52,6 +54,7 @@ def submit(task_id_gen) :
     }
 
     rb.submit_task(taskId,new_task)
+    producer.send(TASK_TOPIC,new_task)
 
     print(f'Task successfully created with the taskId : {taskId}')
 
