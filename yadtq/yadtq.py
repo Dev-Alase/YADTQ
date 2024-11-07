@@ -72,8 +72,7 @@ def try_assign_task():
                     print(f"Assigned task {task['taskId']} to worker {selected_worker}")
 
                     # Update worker_task_map
-                    if selected_worker not in worker_task_map:
-                        worker_task_map[selected_worker] = []
+                    worker_task_map[selected_worker] = []
                     worker_task_map[selected_worker].append(task)
 
                     # Send the task to the WORKER_TOPIC with the worker ID
