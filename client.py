@@ -79,7 +79,7 @@ def __main__() :
 
     print(" Client Program......  ")
     print(" Provide the information about the task you want to perform : ")
-    print(" 1. submit ")
+    print(" 1. enter ")
     print(" 2. query ")
     print(" 3. query [taskId]")
     print(" 4. clear")
@@ -98,7 +98,7 @@ def __main__() :
 
         termios.tcflush(sys.stdin, termios.TCIOFLUSH)
 
-        if proc == "submit" :
+        if proc == "enter" :
             submit(task_id_gen)
         elif proc == "query" :
             query(taskId)

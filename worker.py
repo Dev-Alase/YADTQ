@@ -5,7 +5,7 @@ from backend import ResultBackend
 import time
 import uuid
 import threading
-
+    
 # Initialize the ResultBackend to interact with Redis
 rb = ResultBackend()
 
@@ -34,7 +34,7 @@ class TaskProcessor:
         else:
             raise ValueError("Unsupported task type")
 
-        time.sleep(20)
+        time.sleep(30)
 
         return result
 
@@ -62,6 +62,8 @@ class TaskProcessor:
             print(f"Task {task_id} processed and updated in Redis with result.")
         except Exception as e:
             print(f"Error processing task {task_id}: {e}")
+            rb.update_task_status(task_id,'failed',result=str(e))
+            
             # Optionally update the status to "failed" or handle retries as needed
 
 worker_status = "available"
@@ -73,7 +75,7 @@ def send_heartbeats(worker_id):
             heartbeat_data = {"worker_id": str(worker_id), "status": worker_status}
         producer.send(HEARTBEAT_TOPIC, heartbeat_data)
         producer.flush()  # Ensure message is sent immediately
-        time.sleep(1)
+        time.sleep(5)
 
 def worker(worker_id):
     print(f'Worker started with ID: {worker_id}, waiting for tasks...')
@@ -84,18 +86,18 @@ def worker(worker_id):
     group_id = f"worker_group_{worker_id}"  # Unique consumer group per worker
 
     consumer = KafkaConsumer(
-        WORKER_TOPIC,
-        bootstrap_servers=KAFKA_BROKER_URL,
-        group_id=group_id,  # Use a unique group ID per worker
-        value_deserializer=lambda m: json.loads(m.decode('ascii'))
+    WORKER_TOPIC,
+    bootstrap_servers=KAFKA_BROKER_URL,
+    group_id=group_id,  # Use a unique group ID per worker
+    value_deserializer=lambda m: json.loads(m.decode('ascii'))
     )
 
     for message in consumer:
+        # print(message)
         task_message = message.value
         task = task_message.get('task')
         assigned_worker_id = task_message.get('worker_id')
 
-        # Only process the task if it is assigned to this worker
         if assigned_worker_id == str(worker_id):
             print(f"Assigned task {task['taskId']} to worker {worker_id}: {task}")
             
@@ -104,10 +106,13 @@ def worker(worker_id):
                 worker_status = "busy"  # Mark worker as busy when processing a task
 
             # Handle the task and update Redis with the result
+            
             task_processor.handle_task(task)
+
 
             with worker_status_lock:
                 worker_status = "available"  # Mark worker as available once task is completed
+
 
 
 if __name__ == "__main__":
