@@ -1,10 +1,9 @@
-
 from kafka import KafkaProducer
 import sys
 import termios
 import redis
 import json
-from yadtq.config import KAFKA_BROKER_URL,TASK_TOPIC
+from config import KAFKA_BROKER_URL,TASK_TOPIC
 from backend import ResultBackend
 # import time # uuid,secrets,hashlib
 
@@ -80,8 +79,8 @@ def __main__() :
     print(" Client Program......  ")
     print(" Provide the information about the task you want to perform : ")
     print(" 1. enter ")
-    print(" 2. query ")
-    print(" 3. query [taskId]")
+    print(" 2. enter-query ")
+    print(" 3. show [taskId]")
     print(" 4. clear")
     print(" 4. quit \n\n")
 
@@ -100,12 +99,12 @@ def __main__() :
 
         if proc == "enter" :
             submit(task_id_gen)
-        elif proc == "query" :
+        elif proc == "enter-query" :
             query(taskId)
         elif proc == "clear" :
             rb.clear()
         elif proc == "quit" :
-            print("\n\nClinet executed successfully.....")
+            print("\n\nClient executed successfully.....")
             print("Now aborting.....")
         else :
             print("Provide the correct task")
