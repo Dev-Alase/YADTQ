@@ -22,10 +22,15 @@ class ResultBackend:
         Returns task details as a dictionary if taskId is provided,
         or None if the task doesn't exist.
         """
-        if taskId:
+        if taskId != "":
             task_data = self.redis_client.hgetall(taskId)
             if task_data:
-                return task_data  # Return full task data as a dictionary
+                if task_data["status"] == "queued" or task_data["status"] == "in-progress" :
+                    print(f'Task with ID {taskId} is {task_data["status"]}')
+                else :
+                    print(f'Task with ID {taskId} is {task_data["status"]} with the result {task_data["result"]}')
+                return
+                # return task_data  # Return full task data as a dictionary
             else:
                 print(f"Task with ID {taskId} not found.")
                 return None  # Return None if task not found

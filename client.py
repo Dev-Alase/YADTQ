@@ -3,7 +3,7 @@ import sys
 import termios
 import redis
 import json
-from config import KAFKA_BROKER_URL,TASK_TOPIC
+from yadtq.config import KAFKA_BROKER_URL,TASK_TOPIC
 from backend import ResultBackend
 # import time # uuid,secrets,hashlib
 
@@ -78,11 +78,11 @@ def __main__() :
 
     print(" Client Program......  ")
     print(" Provide the information about the task you want to perform : ")
-    print(" 1. enter ")
-    print(" 2. enter-query ")
-    print(" 3. show [taskId]")
-    print(" 4. clear")
-    print(" 4. quit \n\n")
+    print(" 1. Enter             ( Enter tasks.................... )")
+    print(" 2. Show-Tasks        ( Show progress.................. )")
+    print(" 3. View [taskId]     ( Show progress of one task ..... )")
+    print(" 4. Reset             ( Clears all..................... )")
+    print(" 5. Exit              ( Terminate......................  ) \n\n")
 
     proc = ""
 
@@ -97,15 +97,18 @@ def __main__() :
 
         termios.tcflush(sys.stdin, termios.TCIOFLUSH)
 
-        if proc == "enter" :
+        if proc == "Enter" :
             submit(task_id_gen)
-        elif proc == "enter-query" :
+        elif proc == "Show-Tasks" :
+            query()
+        elif proc == "View" :
             query(taskId)
-        elif proc == "clear" :
+        elif proc == "Reset" :
             rb.clear()
-        elif proc == "quit" :
+        elif proc == "Exit" :
             print("\n\nClient executed successfully.....")
             print("Now aborting.....")
+            return
         else :
             print("Provide the correct task")
 
